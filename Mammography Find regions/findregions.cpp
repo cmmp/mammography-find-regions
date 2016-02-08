@@ -30,11 +30,13 @@
 // basic image information
 #include "MyImage.h"
 
+// auxiliary functions
+#include <MyCppUtils.h>
+
 void process_image(const MyImage::ImageInfo &img_info,
 	const std::string &png_in_dir,
 	const std::string &out_dir, 
-	const std::string &png_out_dir,
-	const int threshold) {
+	const std::string &png_out_dir) {
 
 	std::cout << "Processing " << img_info << std::endl;
 
@@ -85,6 +87,14 @@ void process_image(const MyImage::ImageInfo &img_info,
 		exit(EXIT_FAILURE);
 	}
 
+	std::vector<uchar> array(cropped.rows * cropped.cols);
+	for (int i = 0; i < cropped.rows; i++)
+		array.insert(array.end(), cropped.ptr<uchar>(i), cropped.ptr<uchar>(i) + cropped.cols);
+	
+	double threshold = MyCppUtils::Utils::sampleQuantile(array, 0.995);
+
+	std::cout << "got a threshold of: " << threshold << std::endl;
+
 	for (int i = 0; i < cropped.rows; i++) {
 		for (int j = 0; j < cropped.cols; j++) {
 			int val = cropped.at<uchar>(cv::Point(i, j));
@@ -96,6 +106,7 @@ void process_image(const MyImage::ImageInfo &img_info,
 	}
 
 	file.close();
+
 }
 
 int main(int argc, char **argv) {
@@ -120,9 +131,9 @@ int main(int argc, char **argv) {
 		("png-output-dir,P", 
 			po::value<std::string>(&png_out_path)->default_value("C:\\Users\\Cássio\\datasets\\all-mias\\region-pngs\\"),
 			"directory for output png files")
-		("threshold,T",
+		/*("threshold,T",
 			po::value<int>(&threshold)->default_value(200),
-			"threshold value for generating data files from regions")
+			"threshold value for generating data files from regions")*/
 		;
 	
 	po::variables_map vm;
@@ -161,7 +172,7 @@ int main(int argc, char **argv) {
 			std::stoi(vec[4]) // radius
 		};
 
-		process_image(img_info, orig_path, out_path, png_out_path, threshold);
+		process_image(img_info, orig_path, out_path, png_out_path);
 	}
 	
 	csvin.close();
