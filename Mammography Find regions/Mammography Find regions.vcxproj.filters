@@ -18,6 +18,15 @@
     <ClCompile Include="findregions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="crop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="showimg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyImage.h">
